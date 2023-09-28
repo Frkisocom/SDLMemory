@@ -11,8 +11,8 @@ public:
 	void Render();
 	void Kliknut();
 	void UpdateTexture(const char* content, unsigned int size);
+	SDL_Rect destRect;
 private:
 	SDL_Texture* objTexture;
-	SDL_Rect destRect;
 	SDL_Renderer* renderer;
 };

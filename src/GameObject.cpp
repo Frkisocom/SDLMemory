@@ -21,7 +21,7 @@ GameObject::GameObject(unsigned int id, unsigned int broj, SDL_Renderer* rend)
 GameObject::~GameObject()
 {}
 
-void GameObject::plasiraj(unsigned int x, unsigned int y)
+void GameObject::plasiraj(unsigned int x, unsigned int y, unsigned int ratio, int wid)
 {
 	//koordinate teksture
 	srcRect.h = 1173;
@@ -29,12 +29,12 @@ void GameObject::plasiraj(unsigned int x, unsigned int y)
 	srcRect.x = 0;
 	srcRect.y = 0;
 	//velicina
-	destRect.h = srcRect.h / 6;
-	destRect.w = srcRect.w / 6;
+	destRect.h = srcRect.h / 1.5 / ratio;
+	destRect.w = srcRect.w / 1.5 / ratio;
 	maxW = destRect.w;
 	//pozicija
-	int loff=100, uoff=30, padding=20;
-	destRect.x = loff+(padding+destRect.w)*x;
+	int uoff=30, padding= 60 / ratio;
+	destRect.x = (padding+destRect.w)*x+wid;
 	destRect.y = uoff+(padding+destRect.h)*y;
 }
 void GameObject::Kliknut()

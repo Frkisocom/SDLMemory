@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "GameObject.h"
 
+#include <sstream>
+#include <fstream>
 
 Game* game = nullptr;
 
@@ -15,8 +17,18 @@ int main(int args, char* argv[])
 	Uint32 frameStart;
 	int frameTime;
 
+	std::string item_name;
+	std::ifstream nameFileout;
+	int ww, wh;
+	nameFileout.open("config.txt");
+	nameFileout >> item_name;
+	ww = stoi(item_name);
+	nameFileout >> item_name;
+	wh = stoi(item_name);
+	nameFileout.close();
+
 	game = new Game();
-	game->init("Memori", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 900, false);
+	game->init("Memori", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ww, wh, false);
 	//***********************************************************************************
 	//kreiranje kartica
 	//************************************************************************************

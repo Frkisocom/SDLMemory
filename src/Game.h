@@ -10,7 +10,6 @@ public:
 	~Game();
 
 	void init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);
-	void initGame(unsigned int w, unsigned int h);
 	void update();
 	void render();
 	void clean();
@@ -22,8 +21,11 @@ public:
 	static SDL_Event event;
 
 private:
+	int state = 0;
 	bool isRunning;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	void initState1();
+	void initState2(unsigned int w, unsigned int h, unsigned int nplay);
 
 };
