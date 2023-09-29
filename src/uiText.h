@@ -9,7 +9,7 @@ public:
 	~UIText();
 	void Update();
 	void Render();
-	void Kliknut();
+	void ClickedOn();
 	void UpdateTexture(const char* content, unsigned int size);
 	SDL_Rect destRect;
 private:

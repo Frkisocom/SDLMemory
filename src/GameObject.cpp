@@ -5,12 +5,16 @@
 
 //extern int broj;
 
-GameObject::GameObject(unsigned int id, unsigned int broj, SDL_Renderer* rend)
-	:okrenut(0), sparen(0), uAnimaciji(0), animFrames(0)
+GameObject::GameObject(unsigned int id, unsigned int num, SDL_Renderer* rend)
+	:flipped(false), paired(0), inAnimation(0), animFrames(0)
 {
+	srcRect.h = 1173;
+	srcRect.w = 914;
+	srcRect.x = 0;
+	srcRect.y = 0;
 	this->renderer = rend;
-	if (id >= broj / 2)
-		this->pairID = id - broj / 2;
+	if (id >= num / 2)
+		this->pairID = id - num / 2;
 	else
 		this->pairID = id;
 	std::string path = "res/textures/";
@@ -21,14 +25,8 @@ GameObject::GameObject(unsigned int id, unsigned int broj, SDL_Renderer* rend)
 GameObject::~GameObject()
 {}
 
-void GameObject::plasiraj(unsigned int x, unsigned int y, unsigned int ratio, int wid)
+void GameObject::place(unsigned int x, unsigned int y, unsigned int ratio, int wid)
 {
-	//koordinate teksture
-	srcRect.h = 1173;
-	srcRect.w = 914;
-	srcRect.x = 0;
-	srcRect.y = 0;
-	//velicina
 	destRect.h = srcRect.h / 1.5 / ratio;
 	destRect.w = srcRect.w / 1.5 / ratio;
 	maxW = destRect.w;
@@ -37,20 +35,20 @@ void GameObject::plasiraj(unsigned int x, unsigned int y, unsigned int ratio, in
 	destRect.x = (padding+destRect.w)*x+wid;
 	destRect.y = uoff+(padding+destRect.h)*y;
 }
-void GameObject::Kliknut()
+void GameObject::ClickedOn()
 {
-	uAnimaciji = true;
+	inAnimation = true;
 }
 void GameObject::Update()
 {
-	if (uAnimaciji)
+	if (inAnimation)
 	{
 		if (animFrames <= 30) {
 			destRect.x = destRect.x + maxW / 60;
 			destRect.w = destRect.w - maxW / 30;
 			if (animFrames == 30)
 			{
-				okrenut = !okrenut;
+				flipped = !flipped;
 			}
 			animFrames++;
 		}
@@ -63,7 +61,7 @@ void GameObject::Update()
 		else
 		{
 			//destRect.w = maxW;
-			uAnimaciji = false;
+			inAnimation = false;
 			animFrames = 1;
 		}
 	}
@@ -75,5 +73,4 @@ void GameObject::Render()
 void GameObject::Render(SDL_Texture* tex)
 {
 	SDL_RenderCopy(renderer, tex, &srcRect, &destRect);
-
 }

@@ -29,12 +29,8 @@ int main(int args, char* argv[])
 
 	game = new Game();
 	game->init("Memori", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ww, wh, false);
-	//***********************************************************************************
-	//kreiranje kartica
-	//************************************************************************************
 	while (game->running()) 
 	{
-
 		frameStart = SDL_GetTicks();
 
 		game->handleEvents();
@@ -45,7 +41,6 @@ int main(int args, char* argv[])
 
 		if (frameDelay > frameTime)
 			SDL_Delay(frameDelay - frameTime);
-
 	}
 	game->clean();
 	return 0;

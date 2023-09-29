@@ -1,8 +1,9 @@
-#pragma once
+﻿#pragma once
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 #include <iostream>
+#include <vector>
 
 class Game {
 public:
@@ -16,16 +17,19 @@ public:
 	void handleEvents();
 	void assign(int i);
 
-	SDL_Renderer* getRenderer();
 	bool running();
 	static SDL_Event event;
 
 private:
-	int state = 0;
 	bool isRunning;
+	enum possibleStates
+	{
+		menu, round, leaderboard
+	};
+	possibleStates state = menu;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	void initState1();
-	void initState2(unsigned int w, unsigned int h, unsigned int nplay);
-
+	void initMenu();
+	void initRound(unsigned int w, unsigned int h, unsigned int nplay);
+	void deleteRound();
 };

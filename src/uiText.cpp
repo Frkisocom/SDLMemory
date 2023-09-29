@@ -28,7 +28,7 @@ void UIText::Render()
 {
 	SDL_RenderCopy(renderer, objTexture, NULL, &destRect);
 }
-void UIText::Kliknut()
+void UIText::ClickedOn()
 {
 
 }

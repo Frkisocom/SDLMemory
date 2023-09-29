@@ -6,14 +6,14 @@ public:
 	GameObject(unsigned int id, unsigned int broj, SDL_Renderer* rend);
 	~GameObject();
 
-	void plasiraj(unsigned int x, unsigned int y, unsigned int ratio, int wid);
+	void place(unsigned int x, unsigned int y, unsigned int ratio, int wid);
 	void Update();
 	void Render();
 	void Render(SDL_Texture* tex);
 	unsigned int pairID;
-	bool okrenut, sparen, uAnimaciji;
+	bool flipped, paired, inAnimation;
 	SDL_Rect gdr() { return destRect; }
-	void Kliknut();
+	void ClickedOn();
 
 private:
 	//int xpos, ypos;
