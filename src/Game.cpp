@@ -41,7 +41,7 @@ bool collision(SDL_Rect rec) {
 	return (rec.x<x && rec.x + rec.w>x && rec.y<y && rec.y + rec.h>y);
 }
 
-int pair()
+void pair()
 {
 	if (delay == 60) { //produzi iskljucenje inputa igraca dok se kartica potpuno okrene
 		ctr = 0;
@@ -52,81 +52,52 @@ int pair()
 		{
 			AllCards[activeID[0]]->paired = true;
 			AllCards[activeID[1]]->paired = true;
-			activeID[0] = -1;
-			activeID[1] = -1;
-			delay = 120;
 			playerScores[currentPlayer]++;
 			AllScores[currentPlayer]->UpdateTexture(std::to_string(playerScores[currentPlayer]).c_str(), 38);
-			currentPlayer++;
-			if (currentPlayer == nplay)
-				currentPlayer = 0;
 		}
 		else
 		{
 			AllCards[activeID[0]]->ClickedOn();
 			AllCards[activeID[1]]->ClickedOn();
-			activeID[0] = -1;
-			activeID[1] = -1;
-			delay = 120;
-			currentPlayer++;
-			if (currentPlayer == nplay)
-				currentPlayer = 0;
-			return 2;
 		}
-
+		activeID[0] = -1;
+		activeID[1] = -1;
+		delay = 120;
+		currentPlayer++;
+		if (currentPlayer == nplay)
+			currentPlayer = 0;
 	}
 	else
 		delay--;
-	return 0;
 }
 
 void Game::assign(int i)
 {
 	//max igraca, redova i stupaca je 9
 	if (i < 1 || i > 9) { 
-		//std::cout << i << std::endl; 
+		return;
 	}
-	else {
-		switch (selected) {
-		case 0:
-			row = i;
-			rowT->UpdateTexture(std::to_string(i).c_str(), 40);
-			break;
-		case 1:
-			col = i;
-			colT->UpdateTexture(std::to_string(i).c_str(), 40);
-			break;
-		case 2:
-			nplay = i;
-			playerCount->UpdateTexture(std::to_string(i).c_str(), 40);
-			break;
-		}
+	switch (selected) {
+	case 0:
+		row = i;
+		rowT->UpdateTexture(std::to_string(i).c_str(), 40);
+		break;
+	case 1:
+		col = i;
+		colT->UpdateTexture(std::to_string(i).c_str(), 40);
+		break;
+	case 2:
+		nplay = i;
+		playerCount->UpdateTexture(std::to_string(i).c_str(), 40);
+		break;
 	}
 }
 
 void Game::deleteRound() {
-	for (auto& obj : AllCards) {
-		delete obj;
-	}
-	AllCards.clear();
-	AllCards.shrink_to_fit();
 	std::vector<GameObject*>().swap(AllCards);
-	for (auto& obj : AllPlayers) {
-		delete obj;
-	}
-	AllPlayers.clear();
-	AllPlayers.shrink_to_fit();
 	std::vector<UIText*>().swap(AllPlayers);
-	for (auto& obj : AllScores) {
-		delete obj;
-	}
-	AllScores.clear();
-	AllScores.shrink_to_fit();
 	std::vector<UIText*>().swap(AllScores);
 }
-
-
-
 
 Game::Game() {
 
@@ -177,31 +148,29 @@ void Game::initMenu()
 	AllTexts.push_back(new UIText(renderer, "Izlaz", 25, 35, 20));
 }
 
-void Game::initRound(unsigned int maxCardsw, unsigned int maxCardsh, unsigned int nplay)
+void Game::initRound(unsigned int cardsW, unsigned int cardsH, unsigned int nplay)
 {
 
-	maxCards = maxCardsw * maxCardsh;
+	maxCards = cardsW * cardsH;
 	currentPlayer = 0;
 	for (int i = 0; i < 9; i++)
 		playerScores[i] = 0;
-	
-
 	float ratio;
-	if (2 * maxCardsh < maxCardsw)
-		ratio = float(maxCardsw)/2.0f;
+	if (2 * cardsH < cardsW)
+		ratio = float(cardsW)/2.0f;
 	else
-		ratio = maxCardsh;
+		ratio = cardsH;
 	for (unsigned int i = 0; i < maxCards; i++)
 	{
 		AllCards.push_back(new GameObject(i, maxCards, renderer));
 	}
 	srand(time(NULL));
 	std::random_shuffle(&AllCards[0], &AllCards[maxCards - 1]);
-	int maxw = (60 / ratio + 914 / 1.5 / ratio) * maxCardsw - 60 / ratio;
+	int maxw = (60 / ratio + 914 / 1.5 / ratio) * cardsW - 60 / ratio;
 	int bid = wid / 2 - maxw / 2;
 	for (unsigned int i = 0; i < maxCards; i++)
 	{
-		AllCards[i]->place(i % maxCardsw, i / maxCardsw, ratio, bid);
+		AllCards[i]->place(i % cardsW, i / cardsW, ratio, bid);
 	}
 	defaultTexture = TextureManager::LoadTexture("res/textures/default.jpg", renderer);
 	home = new UIText(renderer, "Menu", 25, 35, 20);
@@ -236,9 +205,9 @@ SDL_Rect SelectorButtons[] = {  { 1000, 300, 80, 80 } ,
 								{ 1000, 430, 80, 80 } ,
 								{ 1000, 560, 80, 80 } };
 SDL_Rect start = { 600, 780, 400, 100 };
-SDL_Rect gumbHome = { 10, 10, 75, 75 };
+SDL_Rect btnMenu = { 10, 10, 75, 75 };
 SDL_Rect pointer = { 10, 10, 210, 10 };
-
+int winCtr = 120;
 void Game::update()
 {
 	if (!canClick)
@@ -259,14 +228,22 @@ void Game::update()
 		if (activeID[0] != -1 && activeID[1] != -1) {
 			pair();
 		}
-		int yoink = 0;
+		int nPaired = 0;
 		for (int i = 0; i < maxCards; i++)
 		{
 			if (AllCards[i]->paired)
-				yoink++;
+				nPaired++;
 		}
-		if (yoink == maxCards)
+		if (nPaired == maxCards)
+		{
+			canClick = false;
+			winCtr--;
+		}
+		if (winCtr == 1) {
+			winCtr = 120;
+			canClick = true;
 			state = leaderboard;
+		}
 	}
 
 }
@@ -280,7 +257,7 @@ void Game::render()
 	case menu:
 		SDL_SetRenderDrawColor(renderer, 66, 75, 245, 255);
 		SDL_RenderFillRects(renderer, &start, 1);
-		SDL_RenderFillRects(renderer, &gumbHome, 1);
+		SDL_RenderFillRects(renderer, &btnMenu, 1);
 		for (int i = 0; i < 3; i++)
 		{
 			if (selected == i) {
@@ -303,7 +280,7 @@ void Game::render()
 		SDL_SetRenderDrawColor(renderer, 140, 245, 180, 255);
 		SDL_RenderFillRect(renderer, &table);
 		SDL_SetRenderDrawColor(renderer, 36, 45, 245, 255);
-		SDL_RenderFillRect(renderer, &gumbHome);
+		SDL_RenderFillRect(renderer, &btnMenu);
 		home->Render();
 		for (unsigned int i = 0; i < maxCards; i++)
 		{
@@ -322,7 +299,7 @@ void Game::render()
 		break;
 	case leaderboard:
 		SDL_SetRenderDrawColor(renderer, 36, 45, 245, 255);
-		SDL_RenderFillRect(renderer, &gumbHome);
+		SDL_RenderFillRect(renderer, &btnMenu);
 		SDL_RenderFillRect(renderer, &start);
 		home->Render();
 		congrats->Render();
@@ -379,7 +356,7 @@ void Game::handleEvents()
 				if (collision(SelectorButtons[i]))
 					selected = i;
 			}
-			if (collision(gumbHome))
+			if (collision(btnMenu))
 				isRunning = false;
 			break;
 		case round:
@@ -396,7 +373,7 @@ void Game::handleEvents()
 						canClick = false;
 					}
 				}
-				if (collision(gumbHome)) {
+				if (collision(btnMenu)) {
 					deleteRound();
 					state = menu;
 				}
@@ -409,7 +386,7 @@ void Game::handleEvents()
 				initRound(row, col, nplay);
 				state = round;
 			}
-			if (collision(gumbHome)) {
+			if (collision(btnMenu)) {
 				deleteRound();
 				state = menu;
 			}

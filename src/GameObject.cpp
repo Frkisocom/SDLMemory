@@ -25,10 +25,10 @@ GameObject::GameObject(unsigned int id, unsigned int num, SDL_Renderer* rend)
 GameObject::~GameObject()
 {}
 
-void GameObject::place(unsigned int x, unsigned int y, unsigned int ratio, int wid)
+void GameObject::place(unsigned int x, unsigned int y, float ratio, int wid)
 {
-	destRect.h = srcRect.h / 1.5 / ratio;
-	destRect.w = srcRect.w / 1.5 / ratio;
+	destRect.h = srcRect.h / 1.5f / ratio;
+	destRect.w = srcRect.w / 1.5f / ratio;
 	maxW = destRect.w;
 	//pozicija
 	int uoff=30, padding= 60 / ratio;

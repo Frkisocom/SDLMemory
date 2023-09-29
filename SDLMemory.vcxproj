@@ -167,6 +167,9 @@
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\uiText.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="c++.gitignore" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

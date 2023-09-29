@@ -6,7 +6,7 @@ public:
 	GameObject(unsigned int id, unsigned int broj, SDL_Renderer* rend);
 	~GameObject();
 
-	void place(unsigned int x, unsigned int y, unsigned int ratio, int wid);
+	void place(unsigned int x, unsigned int y, float ratio, int wid);
 	void Update();
 	void Render();
 	void Render(SDL_Texture* tex);
